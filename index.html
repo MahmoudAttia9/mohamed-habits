@@ -1,0 +1,1170 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>سجل فصول مكتب عباد الرحمن</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
+
+        body {
+            font-family: 'Cairo', sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        /* تصميم العلامة المائية - موضوعة داخل كل صفحة لضمان الطباعة */
+        .watermark {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.12;
+            z-index: -1;
+            width: 75%;
+            max-width: 450px;
+            pointer-events: none;
+        }
+
+        .page-container {
+            max-width: 210mm;
+            min-height: 297mm;
+            margin: 0 auto 20px auto;
+            background: white;
+            padding: 20px 30px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+            box-sizing: border-box;
+        }
+
+        /* رأس الصفحة */
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            border-bottom: 2px solid #4CAF50;
+            padding-bottom: 8px;
+        }
+
+        .header-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .header-text {
+            text-align: center;
+            flex-grow: 1;
+        }
+
+        .header-text h1 {
+            color: #2E7D32;
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .header-text p {
+            color: #666;
+            margin: 5px 0 0 0;
+            font-size: 14px;
+        }
+
+        .header-spacer {
+            width: 70px;
+        }
+
+        /* تصميم الجدول */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+            background-color: transparent;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 5px 8px;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        th {
+            background-color: rgba(76, 175, 80, 0.9);
+            color: white;
+            font-weight: 700;
+            padding: 8px;
+            font-size: 14px;
+        }
+
+        tr:nth-child(even) {
+            background-color: rgba(242, 242, 242, 0.6);
+        }
+
+        tr:hover {
+            background-color: rgba(221, 221, 221, 0.8);
+        }
+
+        /* =========================================
+           إعدادات الطباعة وفصل الصفحات (تم حل المشكلة هنا)
+           ========================================= */
+        @media print {
+            @page {
+                size: A4;
+                margin: 5mm;
+                /* فرض هوامش صغيرة جداً على الطابعة */
+            }
+
+            body {
+                background-color: white;
+                margin: 0;
+                padding: 0;
+            }
+
+            .page-container {
+                box-shadow: none;
+                margin: 0;
+                padding: 0;
+                /* إزالة الحواف الداخلية لزيادة المساحة المتاحة للطباعة */
+                width: 100%;
+                height: auto;
+                min-height: auto;
+                /* إلغاء الطول الإجباري المسبب للصفحات الفاضية */
+                page-break-after: always;
+                /* تم مسح page-break-inside: avoid; لأنه كان يسبب الصفحة الفاضية */
+            }
+
+            .page-container:last-child {
+                page-break-after: auto;
+            }
+
+            .watermark {
+                opacity: 0.15;
+            }
+
+            /* ضغط إضافي مخصص للطباعة لضمان أن 35 اسم يملأ صفحة واحدة بامتياز */
+            th,
+            td {
+                padding: 4px 5px !important;
+                font-size: 12px !important;
+                height: auto !important;
+            }
+
+            .header-logo {
+                width: 60px !important;
+                height: 60px !important;
+            }
+
+            .header-text h1 {
+                font-size: 20px !important;
+            }
+
+            table {
+                margin-top: 5px !important;
+            }
+
+            tr {
+                page-break-inside: avoid;
+                /* يمنع انقسام السطر الواحد على صفحتين */
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ============================================== -->
+    <!-- الصفحة الأولى: فصل أميرة -->
+    <!-- ============================================== -->
+    <div class="page-container">
+        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
+        <div class="header-container">
+            <img class="header-logo" src="logo.png" alt="لوجو">
+            <div class="header-text">
+                <h1>فصل المحفظة أميرة</h1>
+                <p>مرحلة البراعم</p>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>اسم الطالب</th>
+                    <th>رقم الموبايل</th>
+                    <th>الإخوة</th>
+                    <th>اسم المعلمة التابع لها</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>مالك محمد عبد خلاف</td>
+                    <td>01098997962</td>
+                    <td>محمد عبد خلاف</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>يزن بكر إسلام</td>
+                    <td>01017311322</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>محمد عبداللطيف</td>
+                    <td>01507023610</td>
+                    <td>ايه عبداللطيف</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>مليكه محمود عيسى</td>
+                    <td>01060714917</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>ايلين محمد ابراهيم</td>
+                    <td>01113603057</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>مكه محمد عبدالرازق</td>
+                    <td>01062757274</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>عائشه عبدالوهاب</td>
+                    <td>01017845941</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>زينب محمد</td>
+                    <td>01080193001</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>يوسف عزت</td>
+                    <td>01002471043</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>إيناس محمد موسى</td>
+                    <td>01094561758</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>ريماس محمود محمد</td>
+                    <td>01014950101</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>ريناد محمود أبو العلى</td>
+                    <td>01014950101</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>حمزه احمد سمير</td>
+                    <td>01252677160</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>مالك محمد</td>
+                    <td>01068206016</td>
+                    <td>-</td>
+                    <td>أ. أميرة</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- الصفحة الثانية: فصل رحمة -->
+    <!-- ============================================== -->
+    <div class="page-container">
+        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
+        <div class="header-container">
+            <img class="header-logo" src="logo.png" alt="لوجو">
+            <div class="header-text">
+                <h1>فصل المحفظة رحمة</h1>
+                <p>مرحلة الأبطال الشطار</p>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>اسم الطالب</th>
+                    <th>رقم الموبايل</th>
+                    <th>الإخوة</th>
+                    <th>اسم المعلمة التابع لها</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>أميرة وليد</td>
+                    <td>01021974565</td>
+                    <td>كرم وليد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>كرم وليد</td>
+                    <td>01021974565</td>
+                    <td>أميرة وليد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>روضة عبد الحميد</td>
+                    <td>01002936980</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>لميس لطفي</td>
+                    <td>01024579906</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>ملك محمود</td>
+                    <td>01095869275</td>
+                    <td>شروق محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>شروق محمود</td>
+                    <td>01095869275</td>
+                    <td>ملك محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>ريماس محمود</td>
+                    <td>01014950101</td>
+                    <td>ريناد محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>ريناد محمود</td>
+                    <td>01014950101</td>
+                    <td>ريماس محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>بسمة حسن</td>
+                    <td>01033248067</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>ملك أسامة</td>
+                    <td>01061259720</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>ملك وليد</td>
+                    <td>01063126949</td>
+                    <td>نور وليد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>نور وليد</td>
+                    <td>01063126949</td>
+                    <td>ملك وليد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>مكة محمد</td>
+                    <td>01006275724</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>ألين محمد</td>
+                    <td>01011360357</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>حور عابد</td>
+                    <td>01080076747</td>
+                    <td>ضحى عابد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>ضحى عابد</td>
+                    <td>01080076747</td>
+                    <td>حور عابد</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>أحمد محمود</td>
+                    <td>01091912561</td>
+                    <td>علي محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>علي محمود</td>
+                    <td>01091912561</td>
+                    <td>أحمد محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>أحمد علي</td>
+                    <td>01002515196</td>
+                    <td>مازن علي</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>مازن علي</td>
+                    <td>01002515196</td>
+                    <td>أحمد علي</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>إبراهيم محمود</td>
+                    <td>01094139975</td>
+                    <td>ياسين محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>ياسين محمود</td>
+                    <td>01094139975</td>
+                    <td>إبراهيم محمود</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>صلاح محمد</td>
+                    <td>0104640930</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>24</td>
+                    <td>عبد الرحمن سمير</td>
+                    <td>01015521223</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>25</td>
+                    <td>عماد هاني</td>
+                    <td>01065042814</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>26</td>
+                    <td>أحمد حمادة</td>
+                    <td>01027157827</td>
+                    <td>محمد حمادة</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>27</td>
+                    <td>محمد حمادة</td>
+                    <td>01027157827</td>
+                    <td>أحمد حمادة</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>28</td>
+                    <td>ياسين محمود</td>
+                    <td>01092965907</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>29</td>
+                    <td>محمد حازم الرزاز</td>
+                    <td>01016651038</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>30</td>
+                    <td>محمد صلاح</td>
+                    <td>01020028342</td>
+                    <td>ياسين صلاح</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>31</td>
+                    <td>ياسين صلاح</td>
+                    <td>01020028342</td>
+                    <td>محمد صلاح</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>32</td>
+                    <td>محمد حسام</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>33</td>
+                    <td>أحمد عبد اللطيف</td>
+                    <td>01000551474</td>
+                    <td>محمد عبد اللطيف</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>34</td>
+                    <td>محمد عبد اللطيف</td>
+                    <td>01000551474</td>
+                    <td>أحمد عبد اللطيف</td>
+                    <td>أ. رحمة</td>
+                </tr>
+                <tr>
+                    <td>35</td>
+                    <td>محمد السادات</td>
+                    <td>01066744402</td>
+                    <td>-</td>
+                    <td>أ. رحمة</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- الصفحة الثالثة: فصل روضة -->
+    <!-- ============================================== -->
+    <div class="page-container">
+        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
+        <div class="header-container">
+            <img class="header-logo" src="logo.png" alt="لوجو">
+            <div class="header-text">
+                <h1>فصل المحفظة روضة</h1>
+                <p>مرحلة غيث القلوب</p>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>اسم الطالب</th>
+                    <th>رقم الموبايل</th>
+                    <th>الإخوة</th>
+                    <th>اسم المعلمة التابع لها</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>روان طارق</td>
+                    <td>01120594795</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>آلاء وائل</td>
+                    <td>01026511342</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>يوسف علي</td>
+                    <td>01095790381</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>جودي وليد</td>
+                    <td>01013595107</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>يوسف محمد ناصف</td>
+                    <td>01094029021</td>
+                    <td>أكرم محمد ناصف</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>حبيبة ربيع</td>
+                    <td>01014975564</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>ايمان متولي</td>
+                    <td>01011804121</td>
+                    <td>جنه متولي</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>معاذ السيد علي</td>
+                    <td>01065092612</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>حازم محمد</td>
+                    <td>01017410352</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>زياد ياسر سمير</td>
+                    <td>01044291222</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>علي محمد</td>
+                    <td>01033248067</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>محمد هاني</td>
+                    <td>01091847091</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>رأفت السيد</td>
+                    <td>01098932002</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>مريم رسلان</td>
+                    <td>01017284489</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>فاطمه عبد الله</td>
+                    <td>01068699269</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>حنين محمود</td>
+                    <td>01063862466</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>حبيبه نعمان</td>
+                    <td>0112501033</td>
+                    <td>-</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>ريماس لؤي</td>
+                    <td>01091574165</td>
+                    <td>احمد لؤي</td>
+                    <td>أ. روضة</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>حنين اكرم</td>
+                    <td>01063750840</td>
+                    <td>حبيبه اكرم</td>
+                    <td>أ. روضة</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- الصفحة الرابعة: فصل مريم -->
+    <!-- ============================================== -->
+    <div class="page-container">
+        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
+        <div class="header-container">
+            <img class="header-logo" src="logo.png" alt="لوجو">
+            <div class="header-text">
+                <h1>فصل المحفظة مريم</h1>
+                <p>مرحلة النجوم</p>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>اسم الطالب</th>
+                    <th>رقم الموبايل</th>
+                    <th>الإخوة</th>
+                    <th>اسم المعلمة التابع لها</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>فاطمه فكري</td>
+                    <td>01000428101</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>ملك حماده السيد</td>
+                    <td>01063428292</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>أروى محمد</td>
+                    <td>01054698033</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>على إسلام</td>
+                    <td>01017254489</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>أيه عصام</td>
+                    <td>01012548767</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>رضوى أسامه</td>
+                    <td>01069425069</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>يارا محمد لطفي</td>
+                    <td>01095735655</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>ياسين حسن</td>
+                    <td>01094905773</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>ريفال بسام</td>
+                    <td>01017311322</td>
+                    <td>محمد بسام</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>كريم رمزي</td>
+                    <td>01096573517</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>هبه رمزي</td>
+                    <td>01005659755</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>أحمد عبد الحميد</td>
+                    <td>01013466855</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>حبيبة صلاح</td>
+                    <td>01018384314</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>جودي الشربيني</td>
+                    <td>01001246220</td>
+                    <td>ريناد الشربيني</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>روفان عبد السلام</td>
+                    <td>01030098435</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>ريتال محمد</td>
+                    <td>01020257169</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>احمد عبد السلام</td>
+                    <td>01090800423</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>رمضان ابراهيم</td>
+                    <td>01099685975</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>حبيبه عثمان</td>
+                    <td>01080531062</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>ايه البدرشاوى</td>
+                    <td>01091750305</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>21</td>
+                    <td>معاذ حمدي</td>
+                    <td>01090092323</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>22</td>
+                    <td>محمد لطفي</td>
+                    <td>01024567996</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>23</td>
+                    <td>جودي عبد اللطيف</td>
+                    <td>01010346095</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>24</td>
+                    <td>أحمد علاء</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>25</td>
+                    <td>فهد محمود</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>26</td>
+                    <td>أمنه محمد</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>27</td>
+                    <td>جودي خالد</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>28</td>
+                    <td>محمد حاتم</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>29</td>
+                    <td>أدم أحمد مجدي</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>30</td>
+                    <td>بلال هاني شوكه</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>31</td>
+                    <td>محمد مصطفى</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>32</td>
+                    <td>جيهان أحمد</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+                <tr>
+                    <td>33</td>
+                    <td>الاء هاني</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. مريم</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- الصفحة الخامسة: فصل زهراء -->
+    <!-- ============================================== -->
+    <div class="page-container">
+        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
+        <div class="header-container">
+            <img class="header-logo" src="logo.png" alt="لوجو">
+            <div class="header-text">
+                <h1>فصل المحفظة زهراء</h1>
+                <p>مرحلة الملائكة الصغار</p>
+            </div>
+            <div class="header-spacer"></div>
+        </div>
+        <table>
+            <thead>
+                <tr>
+                    <th>م</th>
+                    <th>اسم الطالب</th>
+                    <th>رقم الموبايل</th>
+                    <th>الإخوة</th>
+                    <th>اسم المعلمة التابع لها</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>على محمد على</td>
+                    <td>01044502318</td>
+                    <td>أحمد محمد على</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>خالد رشدي السيد</td>
+                    <td>01080106581</td>
+                    <td>بسمله رشدي السيد</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>عبد السلام على</td>
+                    <td>01200984250</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>وليد محمد حسن</td>
+                    <td>01232248670</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>حلا أبو بكر</td>
+                    <td>01011726067</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>6</td>
+                    <td>حمزه أحمد سمير</td>
+                    <td>01252677160</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>7</td>
+                    <td>محمد أسامه</td>
+                    <td>01061259720</td>
+                    <td>شهد اسامه المتولي</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>8</td>
+                    <td>مروان محمود يحيى</td>
+                    <td>01067149170</td>
+                    <td>مليكه محمود يحيى</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>9</td>
+                    <td>روان أسامه عبد السلام</td>
+                    <td>-</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>10</td>
+                    <td>حبيبه السيد رشاد</td>
+                    <td>01185045360</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>11</td>
+                    <td>ياسمين عزت عزت</td>
+                    <td>01002471043</td>
+                    <td>روضه عزت عزت</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>12</td>
+                    <td>جنه محمد السيد</td>
+                    <td>01032505793</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>13</td>
+                    <td>جنه محمد المتولي</td>
+                    <td>01013776945</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>14</td>
+                    <td>روفان حماده</td>
+                    <td>01000401189</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>15</td>
+                    <td>لبنى أحمد</td>
+                    <td>01033912120</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>16</td>
+                    <td>سلمى محمد</td>
+                    <td>01062311920</td>
+                    <td>هاني محمد</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>17</td>
+                    <td>عهد خالد مجاهد</td>
+                    <td>01064816881</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>18</td>
+                    <td>مكه وليد حسن</td>
+                    <td>01061889904</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>19</td>
+                    <td>ملك عرفه عبد الهادي</td>
+                    <td>01142469299</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+                <tr>
+                    <td>20</td>
+                    <td>اسيل علي هلال</td>
+                    <td>01066946969</td>
+                    <td>-</td>
+                    <td>أ. زهراء</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+
+</html>
