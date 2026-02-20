@@ -1,1170 +1,729 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>سجل فصول مكتب عباد الرحمن</title>
+    <title>متتبع العادات الاحترافي - تحكم كامل</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
-
         body {
-            font-family: 'Cairo', sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: #f9f9f9;
-            color: #333;
+            font-family: 'Tajawal', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+            color: #334155; /* slate-700 */
         }
-
-        /* تصميم العلامة المائية - موضوعة داخل كل صفحة لضمان الطباعة */
-        .watermark {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            opacity: 0.12;
-            z-index: -1;
-            width: 75%;
-            max-width: 450px;
-            pointer-events: none;
-        }
-
-        .page-container {
-            max-width: 210mm;
-            min-height: 297mm;
-            margin: 0 auto 20px auto;
+        
+        /* Modern Glass/Card Styling */
+        .modern-card {
             background: white;
-            padding: 20px 30px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            position: relative;
-            z-index: 1;
-            box-sizing: border-box;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #f1f5f9;
+            transition: transform 0.2s, box-shadow 0.2s;
         }
-
-        /* رأس الصفحة */
-        .header-container {
+        .modern-card:hover {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
+        }
+        
+        /* Custom Animated Checkbox */
+        .habit-checkbox {
+            appearance: none;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid #cbd5e1; /* slate-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            background-color: white;
+            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: space-between;
-            margin-bottom: 15px;
-            border-bottom: 2px solid #4CAF50;
-            padding-bottom: 8px;
+            justify-content: center;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            margin: 0 auto;
+        }
+        
+        .habit-checkbox:hover {
+            border-color: #fb7185; /* rose-400 */
+            transform: scale(1.05);
         }
 
-        .header-logo {
-            width: 70px;
-            height: 70px;
-            object-fit: contain;
+        .habit-checkbox:checked {
+            background-color: #f43f5e; /* rose-500 */
+            border-color: #f43f5e;
+            transform: scale(1.1) rotate(5deg);
         }
-
-        .header-text {
-            text-align: center;
-            flex-grow: 1;
-        }
-
-        .header-text h1 {
-            color: #2E7D32;
-            margin: 0;
-            font-size: 22px;
-        }
-
-        .header-text p {
-            color: #666;
-            margin: 5px 0 0 0;
-            font-size: 14px;
-        }
-
-        .header-spacer {
-            width: 70px;
-        }
-
-        /* تصميم الجدول */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-            background-color: transparent;
-        }
-
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 5px 8px;
-            text-align: center;
-            font-size: 13px;
-        }
-
-        th {
-            background-color: rgba(76, 175, 80, 0.9);
+        
+        .habit-checkbox:checked::after {
+            content: '✔';
             color: white;
-            font-weight: 700;
-            padding: 8px;
-            font-size: 14px;
+            font-size: 0.75rem;
+            font-weight: bold;
         }
 
-        tr:nth-child(even) {
-            background-color: rgba(242, 242, 242, 0.6);
+        /* Scrollbar customization */
+        .table-container::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .table-container::-webkit-scrollbar-track {
+            background: #f8fafc; 
+            border-radius: 8px;
+        }
+        .table-container::-webkit-scrollbar-thumb {
+            background: #cbd5e1; 
+            border-radius: 8px;
+        }
+        .table-container::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8; 
         }
 
-        tr:hover {
-            background-color: rgba(221, 221, 221, 0.8);
+        /* Table specifics */
+        th, td { border-bottom: 1px solid #f1f5f9; border-left: 1px solid #f8fafc; }
+        thead th { border-bottom: 2px solid #e2e8f0; }
+        
+        /* Sticky column shadow for nice depth */
+        .sticky-col-shadow {
+            box-shadow: -4px 0 10px -2px rgba(0,0,0,0.05);
         }
 
-        /* =========================================
-           إعدادات الطباعة وفصل الصفحات (تم حل المشكلة هنا)
-           ========================================= */
-        @media print {
-            @page {
-                size: A4;
-                margin: 5mm;
-                /* فرض هوامش صغيرة جداً على الطابعة */
-            }
+        /* Gradient Text */
+        .text-gradient {
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-image: linear-gradient(to right, #f43f5e, #be123c);
+        }
 
-            body {
-                background-color: white;
-                margin: 0;
-                padding: 0;
-            }
-
-            .page-container {
-                box-shadow: none;
-                margin: 0;
-                padding: 0;
-                /* إزالة الحواف الداخلية لزيادة المساحة المتاحة للطباعة */
-                width: 100%;
-                height: auto;
-                min-height: auto;
-                /* إلغاء الطول الإجباري المسبب للصفحات الفاضية */
-                page-break-after: always;
-                /* تم مسح page-break-inside: avoid; لأنه كان يسبب الصفحة الفاضية */
-            }
-
-            .page-container:last-child {
-                page-break-after: auto;
-            }
-
-            .watermark {
-                opacity: 0.15;
-            }
-
-            /* ضغط إضافي مخصص للطباعة لضمان أن 35 اسم يملأ صفحة واحدة بامتياز */
-            th,
-            td {
-                padding: 4px 5px !important;
-                font-size: 12px !important;
-                height: auto !important;
-            }
-
-            .header-logo {
-                width: 60px !important;
-                height: 60px !important;
-            }
-
-            .header-text h1 {
-                font-size: 20px !important;
-            }
-
-            table {
-                margin-top: 5px !important;
-            }
-
-            tr {
-                page-break-inside: avoid;
-                /* يمنع انقسام السطر الواحد على صفحتين */
-            }
+        /* Modal Styles */
+        .modal-bg {
+            background-color: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
         }
     </style>
 </head>
+<body class="p-4 md:p-8 bg-gradient-to-br from-slate-50 to-slate-100 min-h-screen relative">
 
-<body>
-
-    <!-- ============================================== -->
-    <!-- الصفحة الأولى: فصل أميرة -->
-    <!-- ============================================== -->
-    <div class="page-container">
-        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
-        <div class="header-container">
-            <img class="header-logo" src="logo.png" alt="لوجو">
-            <div class="header-text">
-                <h1>فصل المحفظة أميرة</h1>
-                <p>مرحلة البراعم</p>
+    <div class="max-w-[1400px] mx-auto space-y-6">
+        
+        <!-- Top Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Settings Box -->
+            <div class="lg:col-span-3 space-y-6 flex flex-col justify-between">
+                <div class="modern-card p-6 flex flex-col justify-center items-center h-full relative overflow-hidden">
+                    <div class="absolute -right-4 -top-4 w-32 h-32 bg-rose-100 rounded-full opacity-50 blur-2xl pointer-events-none"></div>
+                    <div class="absolute -left-4 -bottom-4 w-24 h-24 bg-blue-100 rounded-full opacity-50 blur-2xl pointer-events-none"></div>
+                    
+                    <h1 class="font-extrabold text-2xl tracking-wider uppercase text-gradient z-10 text-center leading-tight mb-4">متتبع العادات</h1>
+                    
+                    <div class="flex flex-col gap-3 w-full z-10">
+                        <div class="flex justify-between items-center bg-white/60 p-2 rounded-lg border border-rose-100 shadow-sm">
+                            <span class="text-xs font-bold text-slate-500">السنة</span>
+                            <select id="year-select" class="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer" onchange="handleCalendarChange()"></select>
+                        </div>
+                        <div class="flex justify-between items-center bg-white/60 p-2 rounded-lg border border-rose-100 shadow-sm">
+                            <span class="text-xs font-bold text-slate-500">الشهر</span>
+                            <select id="month-select" class="bg-transparent text-sm font-bold text-slate-700 outline-none cursor-pointer" onchange="handleCalendarChange()">
+                                <option value="0">يناير</option><option value="1">فبراير</option><option value="2">مارس</option>
+                                <option value="3">أبريل</option><option value="4">مايو</option><option value="5">يونيو</option>
+                                <option value="6">يوليو</option><option value="7">أغسطس</option><option value="8">سبتمبر</option>
+                                <option value="9">أكتوبر</option><option value="10">نوفمبر</option><option value="11">ديسمبر</option>
+                            </select>
+                        </div>
+                        <button onclick="openAddHabitModal()" class="mt-2 w-full bg-gradient-to-r from-rose-500 to-rose-600 text-white hover:from-rose-600 hover:to-rose-700 transition-all py-2 rounded-lg text-sm font-bold shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            + إضافة عادة جديدة
+                        </button>
+                    </div>
+                </div>
             </div>
-            <div class="header-spacer"></div>
+
+            <!-- Line Chart (Global Progress Trend) -->
+            <div class="lg:col-span-6 modern-card p-5 flex flex-col h-full relative overflow-hidden">
+                <div class="flex justify-between items-center mb-4 z-10">
+                    <h2 class="text-sm font-bold text-slate-700 flex items-center gap-2">
+                        <svg class="w-4 h-4 text-rose-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                        منحنى التقدم خلال الشهر
+                    </h2>
+                </div>
+                <div class="flex-grow relative h-32 w-full z-10">
+                    <canvas id="lineChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Donut Chart (Overall Progress) -->
+            <div class="lg:col-span-3 modern-card p-5 flex flex-col items-center justify-center relative">
+                <h2 class="text-sm font-bold text-slate-700 w-full text-center mb-2">التقدم اليومي الإجمالي</h2>
+                <div class="w-32 h-32 mt-2 relative">
+                    <canvas id="donutChart"></canvas>
+                    <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <span id="overall-percentage" class="font-bold text-xl text-slate-800 transition-transform duration-300">0%</span>
+                    </div>
+                </div>
+                <div class="flex justify-between w-full mt-4 text-xs font-medium px-4">
+                    <div class="flex flex-col items-center"><span class="w-2 h-2 rounded-full bg-slate-200 mb-1"></span><span id="overall-left" class="text-slate-500">متبقي: 0%</span></div>
+                    <div class="flex flex-col items-center"><span class="w-2 h-2 rounded-full bg-rose-500 mb-1"></span><span id="overall-completed" class="text-rose-600 font-bold">مكتمل: 0%</span></div>
+                </div>
+            </div>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>م</th>
-                    <th>اسم الطالب</th>
-                    <th>رقم الموبايل</th>
-                    <th>الإخوة</th>
-                    <th>اسم المعلمة التابع لها</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>مالك محمد عبد خلاف</td>
-                    <td>01098997962</td>
-                    <td>محمد عبد خلاف</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>يزن بكر إسلام</td>
-                    <td>01017311322</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>محمد عبداللطيف</td>
-                    <td>01507023610</td>
-                    <td>ايه عبداللطيف</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>مليكه محمود عيسى</td>
-                    <td>01060714917</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>ايلين محمد ابراهيم</td>
-                    <td>01113603057</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>مكه محمد عبدالرازق</td>
-                    <td>01062757274</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>عائشه عبدالوهاب</td>
-                    <td>01017845941</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>زينب محمد</td>
-                    <td>01080193001</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>يوسف عزت</td>
-                    <td>01002471043</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>إيناس محمد موسى</td>
-                    <td>01094561758</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>ريماس محمود محمد</td>
-                    <td>01014950101</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>ريناد محمود أبو العلى</td>
-                    <td>01014950101</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>13</td>
-                    <td>حمزه احمد سمير</td>
-                    <td>01252677160</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>مالك محمد</td>
-                    <td>01068206016</td>
-                    <td>-</td>
-                    <td>أ. أميرة</td>
-                </tr>
-            </tbody>
-        </table>
+
+        <!-- Middle Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            
+            <!-- Weekly Overview (Bars) -->
+            <div class="lg:col-span-9 modern-card p-5">
+                <div class="grid grid-cols-12 gap-4 h-full">
+                    <div class="col-span-2 flex flex-col justify-between h-full border-l border-slate-100 pl-4">
+                        <h2 class="text-sm font-bold text-slate-700 mb-4">نظرة عامة أسبوعية</h2>
+                        <div class="text-center bg-slate-50 rounded-lg p-3 border border-slate-100 mb-4">
+                            <div class="text-[10px] font-medium text-slate-500 uppercase">التقدم العالمي</div>
+                            <div id="global-progress-fraction" class="text-lg font-bold text-rose-600">0/0</div>
+                            <div id="global-progress-percent" class="text-xs text-slate-400">0%</div>
+                        </div>
+                        <div class="text-[10px] space-y-2 font-semibold text-slate-500 text-right pr-2">
+                            <div class="flex items-center gap-1 justify-end"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>مكتمل</div>
+                            <div class="flex items-center gap-1 justify-end"><span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>الهدف</div>
+                            <div class="flex items-center gap-1 justify-end"><span class="w-1.5 h-1.5 rounded-full bg-slate-300"></span>متبقي</div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-span-10 flex flex-col pl-2">
+                         <div id="weekly-overview-bars" class="flex-grow flex items-end justify-between px-1 h-32 border-b border-slate-200 pb-2 mb-3">
+                             <!-- Bars injected by JS -->
+                         </div>
+                         <div id="weekly-overview-stats" class="flex justify-between px-1 text-[10px] text-center font-medium text-slate-400">
+                             <!-- Stats injected by JS -->
+                         </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Habits -->
+            <div class="lg:col-span-3 modern-card p-5 flex flex-col">
+                <h2 class="text-sm font-bold text-slate-700 mb-4 flex items-center gap-2">
+                    <span class="text-rose-500 text-lg">★</span> أفضل العادات
+                </h2>
+                <div id="top-habits-list" class="flex-grow flex flex-col justify-start space-y-2 text-xs overflow-y-auto max-h-48 pr-1">
+                    <!-- List injected by JS -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Bottom Section: The Main Interactive Table -->
+        <div class="modern-card overflow-hidden">
+            <div class="bg-rose-50/50 px-5 py-3 border-b border-rose-100/50 flex justify-between items-center">
+                <h2 class="font-bold text-rose-900">سجل العادات اليومية</h2>
+                <div class="flex gap-2">
+                    <span id="table-year-badge" class="text-xs font-bold bg-white px-3 py-1 rounded-full text-rose-600 shadow-sm border border-rose-100"></span>
+                    <span id="table-month-badge" class="text-xs font-bold bg-white px-3 py-1 rounded-full text-rose-600 shadow-sm border border-rose-100"></span>
+                </div>
+            </div>
+            <div class="table-container overflow-x-auto p-1">
+                <table class="w-full text-center border-collapse text-[11px]" id="habit-table">
+                    <!-- Generated by JS -->
+                </table>
+            </div>
+        </div>
+
     </div>
 
-    <!-- ============================================== -->
-    <!-- الصفحة الثانية: فصل رحمة -->
-    <!-- ============================================== -->
-    <div class="page-container">
-        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
-        <div class="header-container">
-            <img class="header-logo" src="logo.png" alt="لوجو">
-            <div class="header-text">
-                <h1>فصل المحفظة رحمة</h1>
-                <p>مرحلة الأبطال الشطار</p>
+    <!-- Modal for Adding New Habit -->
+    <div id="addHabitModal" class="fixed inset-0 modal-bg z-50 hidden flex justify-center items-center opacity-0 transition-opacity duration-300">
+        <div class="bg-white p-6 rounded-2xl shadow-2xl w-96 transform scale-95 transition-transform duration-300 relative">
+            <div class="absolute top-0 right-0 w-full h-2 bg-gradient-to-r from-rose-400 to-rose-600 rounded-t-2xl"></div>
+            <h3 class="text-xl font-bold mb-6 text-slate-800 mt-2">إضافة عادة جديدة 🎯</h3>
+            <div class="space-y-4">
+                <div class="flex gap-3">
+                    <div class="w-1/4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">أيقونة</label>
+                        <input type="text" id="newHabitIcon" value="✨" class="w-full border border-slate-200 bg-slate-50 p-2.5 rounded-lg text-lg text-center outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400 transition-all">
+                    </div>
+                    <div class="w-3/4">
+                        <label class="block text-xs font-bold text-slate-500 mb-1">اسم العادة</label>
+                        <input type="text" id="newHabitName" placeholder="مثال: القراءة..." class="w-full border border-slate-200 bg-slate-50 p-2.5 rounded-lg text-sm outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400 transition-all">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-500 mb-1">الهدف الشهري (عدد الأيام)</label>
+                    <input type="number" id="newHabitGoal" value="30" min="1" max="31" class="w-full border border-slate-200 bg-slate-50 p-2.5 rounded-lg text-sm outline-none focus:border-rose-400 focus:ring-1 focus:ring-rose-400 transition-all">
+                </div>
             </div>
-            <div class="header-spacer"></div>
+            <div class="mt-8 flex justify-end space-x-3 space-x-reverse">
+                <button onclick="closeAddHabitModal()" class="px-5 py-2 text-slate-500 rounded-lg text-sm font-bold hover:bg-slate-100 transition-colors">إلغاء</button>
+                <button onclick="saveNewHabit()" class="px-5 py-2 bg-rose-500 text-white rounded-lg text-sm font-bold hover:bg-rose-600 shadow-md hover:shadow-lg transition-all transform hover:-translate-y-0.5">حفظ وإضافة</button>
+            </div>
         </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>م</th>
-                    <th>اسم الطالب</th>
-                    <th>رقم الموبايل</th>
-                    <th>الإخوة</th>
-                    <th>اسم المعلمة التابع لها</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>أميرة وليد</td>
-                    <td>01021974565</td>
-                    <td>كرم وليد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>كرم وليد</td>
-                    <td>01021974565</td>
-                    <td>أميرة وليد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>روضة عبد الحميد</td>
-                    <td>01002936980</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>لميس لطفي</td>
-                    <td>01024579906</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>ملك محمود</td>
-                    <td>01095869275</td>
-                    <td>شروق محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>شروق محمود</td>
-                    <td>01095869275</td>
-                    <td>ملك محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>ريماس محمود</td>
-                    <td>01014950101</td>
-                    <td>ريناد محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>ريناد محمود</td>
-                    <td>01014950101</td>
-                    <td>ريماس محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>بسمة حسن</td>
-                    <td>01033248067</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>ملك أسامة</td>
-                    <td>01061259720</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>ملك وليد</td>
-                    <td>01063126949</td>
-                    <td>نور وليد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>نور وليد</td>
-                    <td>01063126949</td>
-                    <td>ملك وليد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>13</td>
-                    <td>مكة محمد</td>
-                    <td>01006275724</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>ألين محمد</td>
-                    <td>01011360357</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>15</td>
-                    <td>حور عابد</td>
-                    <td>01080076747</td>
-                    <td>ضحى عابد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>16</td>
-                    <td>ضحى عابد</td>
-                    <td>01080076747</td>
-                    <td>حور عابد</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                    <td>أحمد محمود</td>
-                    <td>01091912561</td>
-                    <td>علي محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>18</td>
-                    <td>علي محمود</td>
-                    <td>01091912561</td>
-                    <td>أحمد محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>19</td>
-                    <td>أحمد علي</td>
-                    <td>01002515196</td>
-                    <td>مازن علي</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>20</td>
-                    <td>مازن علي</td>
-                    <td>01002515196</td>
-                    <td>أحمد علي</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>21</td>
-                    <td>إبراهيم محمود</td>
-                    <td>01094139975</td>
-                    <td>ياسين محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>22</td>
-                    <td>ياسين محمود</td>
-                    <td>01094139975</td>
-                    <td>إبراهيم محمود</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>23</td>
-                    <td>صلاح محمد</td>
-                    <td>0104640930</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>24</td>
-                    <td>عبد الرحمن سمير</td>
-                    <td>01015521223</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>25</td>
-                    <td>عماد هاني</td>
-                    <td>01065042814</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>26</td>
-                    <td>أحمد حمادة</td>
-                    <td>01027157827</td>
-                    <td>محمد حمادة</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>27</td>
-                    <td>محمد حمادة</td>
-                    <td>01027157827</td>
-                    <td>أحمد حمادة</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>28</td>
-                    <td>ياسين محمود</td>
-                    <td>01092965907</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>29</td>
-                    <td>محمد حازم الرزاز</td>
-                    <td>01016651038</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>30</td>
-                    <td>محمد صلاح</td>
-                    <td>01020028342</td>
-                    <td>ياسين صلاح</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>31</td>
-                    <td>ياسين صلاح</td>
-                    <td>01020028342</td>
-                    <td>محمد صلاح</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>32</td>
-                    <td>محمد حسام</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>33</td>
-                    <td>أحمد عبد اللطيف</td>
-                    <td>01000551474</td>
-                    <td>محمد عبد اللطيف</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>34</td>
-                    <td>محمد عبد اللطيف</td>
-                    <td>01000551474</td>
-                    <td>أحمد عبد اللطيف</td>
-                    <td>أ. رحمة</td>
-                </tr>
-                <tr>
-                    <td>35</td>
-                    <td>محمد السادات</td>
-                    <td>01066744402</td>
-                    <td>-</td>
-                    <td>أ. رحمة</td>
-                </tr>
-            </tbody>
-        </table>
     </div>
 
-    <!-- ============================================== -->
-    <!-- الصفحة الثالثة: فصل روضة -->
-    <!-- ============================================== -->
-    <div class="page-container">
-        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
-        <div class="header-container">
-            <img class="header-logo" src="logo.png" alt="لوجو">
-            <div class="header-text">
-                <h1>فصل المحفظة روضة</h1>
-                <p>مرحلة غيث القلوب</p>
-            </div>
-            <div class="header-spacer"></div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>م</th>
-                    <th>اسم الطالب</th>
-                    <th>رقم الموبايل</th>
-                    <th>الإخوة</th>
-                    <th>اسم المعلمة التابع لها</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>روان طارق</td>
-                    <td>01120594795</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>آلاء وائل</td>
-                    <td>01026511342</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>يوسف علي</td>
-                    <td>01095790381</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>جودي وليد</td>
-                    <td>01013595107</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>يوسف محمد ناصف</td>
-                    <td>01094029021</td>
-                    <td>أكرم محمد ناصف</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>حبيبة ربيع</td>
-                    <td>01014975564</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>ايمان متولي</td>
-                    <td>01011804121</td>
-                    <td>جنه متولي</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>معاذ السيد علي</td>
-                    <td>01065092612</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>حازم محمد</td>
-                    <td>01017410352</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>زياد ياسر سمير</td>
-                    <td>01044291222</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>علي محمد</td>
-                    <td>01033248067</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>محمد هاني</td>
-                    <td>01091847091</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>13</td>
-                    <td>رأفت السيد</td>
-                    <td>01098932002</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>مريم رسلان</td>
-                    <td>01017284489</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>15</td>
-                    <td>فاطمه عبد الله</td>
-                    <td>01068699269</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>16</td>
-                    <td>حنين محمود</td>
-                    <td>01063862466</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                    <td>حبيبه نعمان</td>
-                    <td>0112501033</td>
-                    <td>-</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>18</td>
-                    <td>ريماس لؤي</td>
-                    <td>01091574165</td>
-                    <td>احمد لؤي</td>
-                    <td>أ. روضة</td>
-                </tr>
-                <tr>
-                    <td>19</td>
-                    <td>حنين اكرم</td>
-                    <td>01063750840</td>
-                    <td>حبيبه اكرم</td>
-                    <td>أ. روضة</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <script>
+        // --- 1. DYNAMIC CONFIGURATION & DATA ---
+        let currentYear = new Date().getFullYear();
+        let currentMonth = new Date().getMonth(); // 0 = Jan, 11 = Dec
+        
+        let DAYS_IN_MONTH = 30;
+        let DAYS_OF_WEEK = [];
+        let WEEKS = [];
+        
+        const ARABIC_DAYS = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+        const MONTH_NAMES = ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'];
+        
+        let habitsData = [
+            { id: 0, name: 'الجري 30 دقيقة', goal: 30, icon: '🏃‍♂️' },
+            { id: 1, name: 'التأمل والاسترخاء', goal: 25, icon: '🧘‍♂️' },
+            { id: 2, name: 'العناية الشخصية', goal: 20, icon: '🚿' },
+            { id: 3, name: 'وجبات صحية', goal: 25, icon: '🥗' },
+            { id: 4, name: 'شرب 2 لتر ماء', goal: 25, icon: '💧' },
+            { id: 5, name: 'قراءة 20 صفحة', goal: 15, icon: '📚' }
+        ];
 
-    <!-- ============================================== -->
-    <!-- الصفحة الرابعة: فصل مريم -->
-    <!-- ============================================== -->
-    <div class="page-container">
-        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
-        <div class="header-container">
-            <img class="header-logo" src="logo.png" alt="لوجو">
-            <div class="header-text">
-                <h1>فصل المحفظة مريم</h1>
-                <p>مرحلة النجوم</p>
-            </div>
-            <div class="header-spacer"></div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>م</th>
-                    <th>اسم الطالب</th>
-                    <th>رقم الموبايل</th>
-                    <th>الإخوة</th>
-                    <th>اسم المعلمة التابع لها</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>فاطمه فكري</td>
-                    <td>01000428101</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>ملك حماده السيد</td>
-                    <td>01063428292</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>أروى محمد</td>
-                    <td>01054698033</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>على إسلام</td>
-                    <td>01017254489</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>أيه عصام</td>
-                    <td>01012548767</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>رضوى أسامه</td>
-                    <td>01069425069</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>يارا محمد لطفي</td>
-                    <td>01095735655</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>ياسين حسن</td>
-                    <td>01094905773</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>ريفال بسام</td>
-                    <td>01017311322</td>
-                    <td>محمد بسام</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>كريم رمزي</td>
-                    <td>01096573517</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>هبه رمزي</td>
-                    <td>01005659755</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>أحمد عبد الحميد</td>
-                    <td>01013466855</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>13</td>
-                    <td>حبيبة صلاح</td>
-                    <td>01018384314</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>جودي الشربيني</td>
-                    <td>01001246220</td>
-                    <td>ريناد الشربيني</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>15</td>
-                    <td>روفان عبد السلام</td>
-                    <td>01030098435</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>16</td>
-                    <td>ريتال محمد</td>
-                    <td>01020257169</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                    <td>احمد عبد السلام</td>
-                    <td>01090800423</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>18</td>
-                    <td>رمضان ابراهيم</td>
-                    <td>01099685975</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>19</td>
-                    <td>حبيبه عثمان</td>
-                    <td>01080531062</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>20</td>
-                    <td>ايه البدرشاوى</td>
-                    <td>01091750305</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>21</td>
-                    <td>معاذ حمدي</td>
-                    <td>01090092323</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>22</td>
-                    <td>محمد لطفي</td>
-                    <td>01024567996</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>23</td>
-                    <td>جودي عبد اللطيف</td>
-                    <td>01010346095</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>24</td>
-                    <td>أحمد علاء</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>25</td>
-                    <td>فهد محمود</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>26</td>
-                    <td>أمنه محمد</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>27</td>
-                    <td>جودي خالد</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>28</td>
-                    <td>محمد حاتم</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>29</td>
-                    <td>أدم أحمد مجدي</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>30</td>
-                    <td>بلال هاني شوكه</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>31</td>
-                    <td>محمد مصطفى</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>32</td>
-                    <td>جيهان أحمد</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-                <tr>
-                    <td>33</td>
-                    <td>الاء هاني</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. مريم</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        let state = [];
+        let donutChartInst = null;
+        let lineChartInst = null;
 
-    <!-- ============================================== -->
-    <!-- الصفحة الخامسة: فصل زهراء -->
-    <!-- ============================================== -->
-    <div class="page-container">
-        <img class="watermark" src="logo.png" alt="لوجو عباد الرحمن كخلفية">
-        <div class="header-container">
-            <img class="header-logo" src="logo.png" alt="لوجو">
-            <div class="header-text">
-                <h1>فصل المحفظة زهراء</h1>
-                <p>مرحلة الملائكة الصغار</p>
-            </div>
-            <div class="header-spacer"></div>
-        </div>
-        <table>
-            <thead>
-                <tr>
-                    <th>م</th>
-                    <th>اسم الطالب</th>
-                    <th>رقم الموبايل</th>
-                    <th>الإخوة</th>
-                    <th>اسم المعلمة التابع لها</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>على محمد على</td>
-                    <td>01044502318</td>
-                    <td>أحمد محمد على</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>خالد رشدي السيد</td>
-                    <td>01080106581</td>
-                    <td>بسمله رشدي السيد</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>عبد السلام على</td>
-                    <td>01200984250</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>4</td>
-                    <td>وليد محمد حسن</td>
-                    <td>01232248670</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>5</td>
-                    <td>حلا أبو بكر</td>
-                    <td>01011726067</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>6</td>
-                    <td>حمزه أحمد سمير</td>
-                    <td>01252677160</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>7</td>
-                    <td>محمد أسامه</td>
-                    <td>01061259720</td>
-                    <td>شهد اسامه المتولي</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>8</td>
-                    <td>مروان محمود يحيى</td>
-                    <td>01067149170</td>
-                    <td>مليكه محمود يحيى</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>9</td>
-                    <td>روان أسامه عبد السلام</td>
-                    <td>-</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>10</td>
-                    <td>حبيبه السيد رشاد</td>
-                    <td>01185045360</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>11</td>
-                    <td>ياسمين عزت عزت</td>
-                    <td>01002471043</td>
-                    <td>روضه عزت عزت</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>12</td>
-                    <td>جنه محمد السيد</td>
-                    <td>01032505793</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>13</td>
-                    <td>جنه محمد المتولي</td>
-                    <td>01013776945</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>14</td>
-                    <td>روفان حماده</td>
-                    <td>01000401189</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>15</td>
-                    <td>لبنى أحمد</td>
-                    <td>01033912120</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>16</td>
-                    <td>سلمى محمد</td>
-                    <td>01062311920</td>
-                    <td>هاني محمد</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>17</td>
-                    <td>عهد خالد مجاهد</td>
-                    <td>01064816881</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>18</td>
-                    <td>مكه وليد حسن</td>
-                    <td>01061889904</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>19</td>
-                    <td>ملك عرفه عبد الهادي</td>
-                    <td>01142469299</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-                <tr>
-                    <td>20</td>
-                    <td>اسيل علي هلال</td>
-                    <td>01066946969</td>
-                    <td>-</td>
-                    <td>أ. زهراء</td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        // --- 2. CALENDAR INITIALIZATION ---
 
+        function initCalendarSelects() {
+            const yearSelect = document.getElementById('year-select');
+            yearSelect.innerHTML = '';
+            for(let y = currentYear - 5; y <= currentYear + 5; y++) {
+                yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
+            }
+            yearSelect.value = currentYear;
+            document.getElementById('month-select').value = currentMonth;
+        }
+
+        function calculateCalendarData() {
+            DAYS_IN_MONTH = new Date(currentYear, currentMonth + 1, 0).getDate();
+            const startDayIndex = new Date(currentYear, currentMonth, 1).getDay();
+
+            DAYS_OF_WEEK = [];
+            for (let i = 0; i < DAYS_IN_MONTH; i++) {
+                DAYS_OF_WEEK.push(ARABIC_DAYS[(startDayIndex + i) % 7]);
+            }
+
+            WEEKS = [];
+            let weekCount = 1;
+            let currentWeekDays = 0;
+            
+            for (let i = 0; i < DAYS_IN_MONTH; i++) {
+                currentWeekDays++;
+                let currentDayName = DAYS_OF_WEEK[i];
+                let isLastDayOfMonth = (i === DAYS_IN_MONTH - 1);
+                
+                if (currentDayName === 'السبت' || isLastDayOfMonth) {
+                    WEEKS.push({ name: `الأسبوع ${weekCount}`, days: currentWeekDays });
+                    weekCount++;
+                    currentWeekDays = 0;
+                }
+            }
+
+            // Generate state based on selected month (in a real app you'd load from DB)
+            state = habitsData.map(() => new Array(DAYS_IN_MONTH).fill(false));
+            
+            // Generate some random mockup data just for visually appealing testing
+            for(let h=0; h<habitsData.length; h++) {
+                for(let d=0; d<DAYS_IN_MONTH; d++) { 
+                    if(Math.random() > 0.6) state[h][d] = true;
+                }
+            }
+
+            document.getElementById('table-year-badge').innerText = `السنة: ${currentYear}`;
+            document.getElementById('table-month-badge').innerText = `الشهر: ${MONTH_NAMES[currentMonth]}`;
+        }
+
+        function handleCalendarChange() {
+            currentYear = parseInt(document.getElementById('year-select').value);
+            currentMonth = parseInt(document.getElementById('month-select').value);
+            
+            calculateCalendarData();
+            rebuildUI();
+        }
+
+        // --- 3. MODAL LOGIC ---
+
+        function openAddHabitModal() {
+            const modal = document.getElementById('addHabitModal');
+            const modalContent = modal.querySelector('div');
+            modal.classList.remove('hidden');
+            
+            // Animation
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                modalContent.classList.remove('scale-95');
+            }, 10);
+            
+            document.getElementById('newHabitGoal').max = DAYS_IN_MONTH;
+            document.getElementById('newHabitGoal').value = DAYS_IN_MONTH;
+        }
+
+        function closeAddHabitModal() {
+            const modal = document.getElementById('addHabitModal');
+            const modalContent = modal.querySelector('div');
+            
+            modal.classList.add('opacity-0');
+            modalContent.classList.add('scale-95');
+            
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                document.getElementById('newHabitName').value = '';
+                document.getElementById('newHabitIcon').value = '✨';
+            }, 300);
+        }
+
+        function saveNewHabit() {
+            const name = document.getElementById('newHabitName').value.trim();
+            const icon = document.getElementById('newHabitIcon').value.trim() || '✨';
+            const goal = parseInt(document.getElementById('newHabitGoal').value);
+            
+            if(!name) { alert("يرجى إدخال اسم العادة"); return; }
+            if(isNaN(goal) || goal <= 0) { alert("يرجى إدخال هدف صحيح"); return; }
+
+            const newId = habitsData.length > 0 ? habitsData[habitsData.length - 1].id + 1 : 0;
+            habitsData.push({ id: newId, name: name, icon: icon, goal: goal });
+            state.push(new Array(DAYS_IN_MONTH).fill(false));
+            
+            closeAddHabitModal();
+            rebuildUI();
+        }
+
+        // --- 4. CALCULATIONS ---
+
+        function calculateHabitStats(habitIndex) {
+            const days = state[habitIndex];
+            const completed = days.filter(d => d).length;
+            const goal = habitsData[habitIndex].goal;
+            const left = Math.max(0, goal - completed);
+            const percentage = goal === 0 ? 0 : Math.min(100, Math.round((completed / goal) * 100));
+
+            let currentStreak = 0; let maxStreak = 0; let tempStreak = 0;
+
+            for (let i = days.length - 1; i >= 0; i--) {
+                if (days[i]) currentStreak++; else break; 
+            }
+
+            for (let i = 0; i < days.length; i++) {
+                if (days[i]) {
+                    tempStreak++;
+                    if (tempStreak > maxStreak) maxStreak = tempStreak;
+                } else { tempStreak = 0; }
+            }
+
+            return { completed, goal, left, percentage, currentStreak, maxStreak };
+        }
+
+        function calculateGlobalStats() {
+            let totalCompleted = 0;
+            let totalGoal = 0;
+            const dailyCompletions = new Array(DAYS_IN_MONTH).fill(0);
+            const dailyGoals = new Array(DAYS_IN_MONTH).fill(habitsData.length); 
+
+            habitsData.forEach((habit, hIdx) => {
+                totalGoal += habit.goal;
+                state[hIdx].forEach((isChecked, dIdx) => {
+                    if (isChecked) {
+                        totalCompleted++;
+                        dailyCompletions[dIdx]++;
+                    }
+                });
+            });
+
+            const overallPercentage = totalGoal === 0 ? 0 : Math.round((totalCompleted / totalGoal) * 100);
+
+            const habitsWithStats = habitsData.map((h, i) => {
+                const stats = calculateHabitStats(i);
+                return { name: h.name, icon: h.icon, percentage: stats.percentage };
+            });
+            habitsWithStats.sort((a, b) => b.percentage - a.percentage);
+            const topHabits = habitsWithStats.slice(0, 8);
+
+            return { totalCompleted, totalGoal, overallPercentage, dailyCompletions, dailyGoals, topHabits };
+        }
+
+        // --- 5. RENDERING (MODERN UI) ---
+
+        function renderTable() {
+            const table = document.getElementById('habit-table');
+            let html = '';
+
+            // --- THEAD ---
+            html += '<thead>';
+            html += `<tr class="bg-white">
+                <th rowspan="3" class="p-3 w-48 font-bold text-sm text-slate-800 sticky right-0 bg-white z-10 sticky-col-shadow text-right">العادة</th>
+                <th rowspan="3" class="p-2 w-12 font-bold text-slate-500 bg-slate-50 border-r border-slate-100">الهدف</th>`;
+            
+            WEEKS.forEach((week, wIdx) => {
+                let borderClass = wIdx > 0 ? 'border-r-2 border-slate-200' : '';
+                html += `<th colspan="${week.days}" class="p-2 font-bold text-slate-600 bg-slate-50 rounded-t-lg ${borderClass}">${week.name}</th>`;
+            });
+            
+            html += `<th rowspan="3" class="p-2 w-12 font-bold text-emerald-600 bg-emerald-50 border-r-2 border-slate-200">مكتمل</th>
+                <th rowspan="3" class="p-2 w-12 font-bold text-slate-500 bg-slate-50">متبقي</th>
+                <th rowspan="3" class="p-2 w-12 font-bold text-rose-600 bg-rose-50">%</th>
+                <th rowspan="3" class="p-2 w-32 font-bold text-slate-600 bg-slate-50">التقدم</th>
+                <th rowspan="3" class="p-2 w-16 font-bold text-amber-600 bg-amber-50 leading-tight">سلسلة<br>حالية</th>
+                <th rowspan="3" class="p-2 w-16 font-bold text-purple-600 bg-purple-50 leading-tight">أطول<br>سلسلة</th>
+            </tr>`;
+
+            html += `<tr class="bg-white">`;
+            for(let i=0; i<DAYS_IN_MONTH; i++) {
+                let isWeekEndDay = (i > 0 && DAYS_OF_WEEK[i-1] === 'السبت');
+                let classes = "p-1 font-medium text-[9px] text-slate-400 uppercase tracking-wider";
+                if(isWeekEndDay) classes += " border-r-2 border-slate-200"; 
+                html += `<th class="${classes}">${DAYS_OF_WEEK[i]}</th>`;
+            }
+            html += `</tr>`;
+
+            html += `<tr class="bg-white border-b-2 border-slate-200">`;
+            for(let i=1; i<=DAYS_IN_MONTH; i++) {
+                 let isWeekEndDay = (i > 1 && DAYS_OF_WEEK[i-2] === 'السبت');
+                 let classes = "p-1.5 font-bold text-slate-700 text-xs";
+                 let isWeekend = (DAYS_OF_WEEK[i-1] === 'الجمعة' || DAYS_OF_WEEK[i-1] === 'السبت');
+                 if(isWeekend) classes += " text-rose-400"; 
+                 if(isWeekEndDay) classes += " border-r-2 border-slate-200";
+                 html += `<th class="${classes}">${i}</th>`;
+            }
+            html += `</tr></thead>`;
+
+            // --- TBODY ---
+            html += `<tbody>`;
+            habitsData.forEach((habit, hIdx) => {
+                html += `<tr class="border-b border-slate-100 hover:bg-slate-50/80 transition-colors group">
+                    <td class="p-3 text-right font-semibold text-slate-700 sticky right-0 z-10 sticky-col-shadow text-xs bg-white group-hover:bg-slate-50/90 transition-colors">
+                        <span class="mr-2 text-lg">${habit.icon}</span> ${habit.name}
+                    </td>
+                    <td class="p-2 font-bold text-slate-400 bg-slate-50/50 border-r border-slate-100">${habit.goal}</td>`;
+                
+                for(let d=0; d<DAYS_IN_MONTH; d++) {
+                    let isWeekEndDay = (d > 0 && DAYS_OF_WEEK[d-1] === 'السبت');
+                    let tdClasses = "p-1.5 hover:bg-rose-50/50 transition-colors";
+                    if(isWeekEndDay) tdClasses += " border-l-2 border-slate-200"; // RTL logic
+                    
+                    const isChecked = state[hIdx][d] ? 'checked' : '';
+                    html += `<td class="${tdClasses}">
+                        <input type="checkbox" class="habit-checkbox" data-habit="${hIdx}" data-day="${d}" ${isChecked} onchange="toggleHabit(${hIdx}, ${d})">
+                    </td>`;
+                }
+
+                html += `
+                    <td class="p-2 font-bold text-emerald-600 bg-emerald-50/30 border-r-2 border-slate-200" id="stat-comp-${hIdx}">0</td>
+                    <td class="p-2 font-medium text-slate-400 bg-slate-50/50" id="stat-left-${hIdx}">0</td>
+                    <td class="p-2 font-bold text-rose-600 bg-rose-50/50" id="stat-perc-${hIdx}">0%</td>
+                    <td class="p-2 bg-slate-50/50 text-right px-3 align-middle">
+                        <div class="w-full bg-slate-200 h-2.5 rounded-full overflow-hidden shadow-inner">
+                            <div id="stat-bar-${hIdx}" class="bg-gradient-to-l from-rose-400 to-rose-500 h-full rounded-full transition-all duration-700 ease-out" style="width: 0%"></div>
+                        </div>
+                    </td>
+                    <td class="p-2 font-bold text-amber-500 bg-amber-50/30" id="stat-cstreak-${hIdx}">0</td>
+                    <td class="p-2 font-bold text-purple-600 bg-purple-50/30" id="stat-mstreak-${hIdx}">0</td>
+                </tr>`;
+            });
+            
+            if(habitsData.length === 0) {
+                 html += `<tr><td colspan="${6 + DAYS_IN_MONTH}" class="p-8 text-center text-slate-400 font-bold bg-slate-50">لا توجد عادات حالياً. أضف عادة جديدة للبدء! ✨</td></tr>`;
+            }
+            
+            html += `</tbody>`;
+            table.innerHTML = html;
+        }
+
+        function renderWeeklyOverviewBars(globalStats) {
+            const barsContainer = document.getElementById('weekly-overview-bars');
+            const statsContainer = document.getElementById('weekly-overview-stats');
+            
+            let barsHtml = ''; let statsHtml = '';
+            const maxDailyCompletions = habitsData.length || 1;
+
+            for(let i=0; i<DAYS_IN_MONTH; i++) {
+                const completed = globalStats.dailyCompletions[i];
+                const goal = globalStats.dailyGoals[i];
+                const heightPercent = (completed / maxDailyCompletions) * 100;
+                
+                let isWeekEndDay = (i > 0 && DAYS_OF_WEEK[i-1] === 'السبت');
+                let marginClass = isWeekEndDay ? 'ml-3' : ''; // RTL logic
+
+                barsHtml += `
+                <div class="flex flex-col items-center justify-end w-full h-full ${marginClass} group relative">
+                    <div class="absolute -top-7 opacity-0 group-hover:opacity-100 bg-slate-800 text-white text-[10px] py-0.5 px-2 rounded transition-opacity whitespace-nowrap z-10 shadow-lg pointer-events-none">
+                        اليوم ${i+1}: ${completed} مكتمل
+                    </div>
+                    <div class="w-full max-w-[12px] md:max-w-[16px] bg-gradient-to-t from-rose-300 to-rose-500 rounded-t-md transition-all duration-500 ease-out group-hover:opacity-80" style="height: ${heightPercent}%"></div>
+                </div>`;
+
+                statsHtml += `
+                <div class="flex flex-col w-full ${marginClass} items-center gap-0.5 mt-1">
+                    <span class="text-emerald-500 font-bold">${completed}</span>
+                    <span class="text-slate-300 text-[8px]">${goal}</span>
+                </div>`;
+            }
+
+            barsContainer.innerHTML = barsHtml;
+            statsContainer.innerHTML = statsHtml;
+
+            document.getElementById('global-progress-fraction').innerText = `${globalStats.totalCompleted}/${globalStats.totalGoal}`;
+            document.getElementById('global-progress-percent').innerText = `${globalStats.overallPercentage}%`;
+        }
+
+        function renderTopHabits(topHabits) {
+            const container = document.getElementById('top-habits-list');
+            let html = '';
+            topHabits.forEach((habit, index) => {
+                let rankColor = index < 3 ? 'text-rose-500' : 'text-slate-400';
+                let rankBg = index < 3 ? 'bg-rose-50' : 'bg-slate-50';
+
+                html += `
+                <div class="flex flex-col ${rankBg} border border-slate-100 p-2.5 rounded-lg transition-all hover:shadow-md hover:-translate-y-0.5 relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-1 h-full bg-gradient-to-b ${index < 3 ? 'from-rose-400 to-rose-600' : 'from-slate-300 to-slate-400'}"></div>
+                    <div class="flex justify-between items-center mb-1.5 pr-2">
+                        <div class="flex items-center gap-2">
+                            <span class="font-extrabold ${rankColor} text-sm">${index + 1}</span>
+                            <span class="font-semibold text-slate-700 flex items-center gap-1.5"><span class="text-base">${habit.icon}</span> ${habit.name}</span>
+                        </div>
+                        <span class="font-bold text-rose-600 bg-white px-2 py-0.5 rounded shadow-sm border border-slate-100">${habit.percentage}%</span>
+                    </div>
+                    <div class="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mr-2">
+                        <div class="bg-gradient-to-l ${index < 3 ? 'from-rose-400 to-rose-500' : 'from-slate-400 to-slate-500'} h-full rounded-full transition-all duration-700" style="width: ${habit.percentage}%"></div>
+                    </div>
+                </div>`;
+            });
+            if(topHabits.length === 0) {
+                 html = `<div class="text-center text-slate-400 mt-4 text-sm font-bold">لا يوجد بيانات</div>`;
+            }
+            container.innerHTML = html;
+        }
+
+        function initOrUpdateCharts(gStats) {
+            const donutCtx = document.getElementById('donutChart').getContext('2d');
+            const lineCtx = document.getElementById('lineChart').getContext('2d');
+
+            // --- Gradients ---
+            let gradientDonut = donutCtx.createLinearGradient(0, 0, 0, 150);
+            gradientDonut.addColorStop(0, '#f43f5e'); gradientDonut.addColorStop(1, '#be123c');
+
+            let gradientLine = lineCtx.createLinearGradient(0, 0, 0, 150);
+            gradientLine.addColorStop(0, 'rgba(244, 63, 94, 0.3)'); gradientLine.addColorStop(1, 'rgba(244, 63, 94, 0.0)');
+
+            // --- Donut Chart ---
+            if(donutChartInst) donutChartInst.destroy();
+            donutChartInst = new Chart(donutCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['مكتمل', 'متبقي'],
+                    datasets: [{
+                        data: gStats ? [gStats.overallPercentage, 100 - gStats.overallPercentage] : [0, 100],
+                        backgroundColor: [gradientDonut, '#f1f5f9'],
+                        borderWidth: 0,
+                        cutout: '78%',
+                        borderRadius: 10 
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    plugins: { legend: { display: false }, tooltip: { enabled: false } },
+                    animation: { animateScale: true, animateRotate: true, duration: 800, easing: 'easeOutQuart' }
+                }
+            });
+
+            // --- Line Chart ---
+            if(lineChartInst) lineChartInst.destroy();
+            lineChartInst = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: Array.from({length: DAYS_IN_MONTH}, (_, i) => i + 1),
+                    datasets: [{
+                        label: 'عدد العادات المكتملة',
+                        data: gStats ? gStats.dailyCompletions : new Array(DAYS_IN_MONTH).fill(0),
+                        borderColor: '#f43f5e',
+                        backgroundColor: gradientLine,
+                        borderWidth: 3,
+                        pointRadius: 0, 
+                        pointHoverRadius: 6,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#f43f5e',
+                        pointBorderWidth: 2,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true, maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: { backgroundColor: 'rgba(15, 23, 42, 0.9)', titleFont: { family: 'Tajawal' }, bodyFont: { family: 'Tajawal' }, padding: 10, cornerRadius: 8, displayColors: false }
+                    },
+                    scales: {
+                        y: { 
+                            beginAtZero: true, 
+                            max: habitsData.length || 1,
+                            ticks: { display: false },
+                            grid: { color: '#f1f5f9', drawBorder: false }, border: { display: false }
+                        },
+                        x: {
+                            grid: { display: false, drawBorder: false },
+                            ticks: { font: { size: 10, family: 'Tajawal' }, color: '#94a3b8' }, border: { display: false }
+                        }
+                    },
+                    animation: { duration: 800, easing: 'easeOutQuart' }
+                }
+            });
+        }
+
+        // --- 6. UPDATE ROUTINES ---
+
+        window.toggleHabit = function(habitIndex, dayIndex) {
+            state[habitIndex][dayIndex] = !state[habitIndex][dayIndex];
+            updateRowUI(habitIndex);
+            updateGlobalUI();
+        };
+
+        function updateRowUI(habitIndex) {
+            const stats = calculateHabitStats(habitIndex);
+            document.getElementById(`stat-comp-${habitIndex}`).innerText = stats.completed;
+            document.getElementById(`stat-left-${habitIndex}`).innerText = stats.left;
+            document.getElementById(`stat-perc-${habitIndex}`).innerText = `${stats.percentage}%`;
+            document.getElementById(`stat-bar-${habitIndex}`).style.width = `${stats.percentage}%`;
+            document.getElementById(`stat-cstreak-${habitIndex}`).innerText = stats.currentStreak;
+            document.getElementById(`stat-mstreak-${habitIndex}`).innerText = stats.maxStreak;
+        }
+
+        function updateGlobalUI(isFullRebuild = false) {
+            const gStats = calculateGlobalStats();
+
+            if(isFullRebuild) {
+                initOrUpdateCharts(gStats);
+            } else {
+                donutChartInst.data.datasets[0].data = [gStats.overallPercentage, 100 - gStats.overallPercentage];
+                donutChartInst.update();
+                
+                lineChartInst.data.datasets[0].data = gStats.dailyCompletions;
+                lineChartInst.options.scales.y.max = habitsData.length || 1;
+                lineChartInst.update();
+            }
+
+            const pctElement = document.getElementById('overall-percentage');
+            pctElement.innerText = `${gStats.overallPercentage}%`;
+            pctElement.classList.add('scale-110', 'text-rose-500');
+            setTimeout(() => pctElement.classList.remove('scale-110', 'text-rose-500'), 200);
+
+            document.getElementById('overall-left').innerText = `متبقي: ${100 - gStats.overallPercentage}%`;
+            document.getElementById('overall-completed').innerText = `مكتمل: ${gStats.overallPercentage}%`;
+
+            renderWeeklyOverviewBars(gStats);
+            renderTopHabits(gStats.topHabits);
+        }
+
+        function rebuildUI() {
+            renderTable();
+            habitsData.forEach((_, index) => updateRowUI(index));
+            updateGlobalUI(true);
+        }
+
+        // --- 7. STARTUP ---
+        window.onload = () => {
+            initCalendarSelects();
+            calculateCalendarData();
+            rebuildUI();
+        };
+
+    </script>
 </body>
-
 </html>
